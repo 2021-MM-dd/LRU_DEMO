@@ -2,14 +2,13 @@ package lru
 
 import (
 	"container/list"
-	"fmt"
 )
 
 /*
 max   最大容量
 used  当前已使用
-cache 双向链表 借此实现LRU
-index 缓存本身
+l 双向链表 借此实现LRU
+cache 缓存本身
 */
 type Cache struct {
 	max   int64
@@ -32,10 +31,7 @@ func (c *Cache) removeOutSpace() {
 	c.l.Remove(tail)
 	e := tail.Value.(*entry)
 	delete(c.cache, e.k)
-	a := int64(len(e.k))
-	b := int64(e.v.Len())
-	fmt.Println(a, b)
-	c.used += int64(len(e.k)) + int64(e.v.Len())
+	c.used -= int64(len(e.k)) + int64(e.v.Len())
 }
 
 func (c *Cache) Add(key string, value Value) (v Value, ok bool) {
