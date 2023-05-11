@@ -11,10 +11,11 @@ l 双向链表 借此实现LRU
 cache 缓存本身
 */
 type Cache struct {
-	max   int64
-	used  int64
-	l     *list.List
-	cache map[string]*list.Element
+	max      int64
+	used     int64
+	l        *list.List
+	cache    map[string]*list.Element
+	OnRemove func(key string, v Value)
 }
 
 type entry struct {
@@ -32,6 +33,9 @@ func (c *Cache) removeOutSpace() {
 	e := tail.Value.(*entry)
 	delete(c.cache, e.k)
 	c.used -= int64(len(e.k)) + int64(e.v.Len())
+	if c.OnRemove != nil {
+		c.OnRemove(e.k, e.v)
+	}
 }
 
 func (c *Cache) Add(key string, value Value) (v Value, ok bool) {
