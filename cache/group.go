@@ -10,13 +10,23 @@ var (
 	groups = make(map[string]*Group)
 )
 
+type Call interface {
+	Get(key string) []byte
+}
+
+type GetFunc func(key string) []byte
+
+func (g GetFunc) Get(key string) []byte {
+	return g(key)
+}
+
 type Group struct {
 	name     string
 	cache    cache
-	callback CallBack
+	callback Call
 }
 
-func NewGroup(name string, max int64, cb CallBack) *Group {
+func NewGroup(name string, max int64, cb Call) *Group {
 	rwtax.Lock()
 	defer rwtax.Unlock()
 	g := &Group{

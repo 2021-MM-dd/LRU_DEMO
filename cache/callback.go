@@ -1,12 +1,13 @@
 package cache
 
-type CallBack interface {
-	Get(key string) []byte
+import "fmt"
+
+func GetDataFromRemote(key string) []byte {
+	fmt.Println(key)
+	return nil
 }
 
-type GetData func(key string) []byte
-
-// 未实现
-func (g GetData) GetDataFromRemote(key string) []byte {
-	return g(key)
+func GetDataFromLocal(key string) []byte {
+	fmt.Println(key)
+	return nil
 }
